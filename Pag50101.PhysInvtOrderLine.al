@@ -1,8 +1,8 @@
 page 50101 "PhysInvtOrderLine"
 {
 
-    APIGroup = 'apiGroup';
-    APIPublisher = 'publisherName';
+    APIPublisher = 'HanseSolution';
+    APIGroup = 'HSG';
     APIVersion = 'v1.0';
     Caption = 'PhysInvtOrderLine';
     DelayedInsert = true;
