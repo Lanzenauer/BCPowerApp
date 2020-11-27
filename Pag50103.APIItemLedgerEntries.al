@@ -11,6 +11,7 @@ page 50103 "APIItemLedgerEntries"
     EntitySetName = 'LoadedLedgerEntries';
     ODataKeyFields = ID;
 
+
     layout
     {
         area(Content)
