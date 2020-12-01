@@ -1,4 +1,4 @@
-page 50107 TransferItemsCard
+page 50107 "TransferItemsCard"
 {
 
     Caption = 'TransferItemsCard';

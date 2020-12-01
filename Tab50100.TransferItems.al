@@ -1,5 +1,5 @@
 /// <summary>
-/// Table TransferItems (ID 50100).
+/// Table "TransferItems" (ID 50100).
 /// </summary>
 table 50100 TransferItems
 {

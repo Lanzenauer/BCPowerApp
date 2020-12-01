@@ -67,7 +67,7 @@ codeunit 50100 "Excel Helper"
         FormatId_gInt: Integer;
         Text001: Label 'You must enter a file name.';
         FileManagement: Codeunit "File Management";
-        ServerFileName_gTxt: Text[80];
+        ServerFileName_gTxt: Text;
 
     local procedure UT_Example_Import_lFnc()
     var
@@ -186,7 +186,6 @@ codeunit 50100 "Excel Helper"
         FileMgt_lCdu: Codeunit "File Management";
         IJL_Tmp_lRec: Record "Item Journal Line" temporary;
         V_lTxt: Text;
-        ServerFileName_gTxt: Text;
     begin
         //SheetName_gTxt:= '';
         ImportName_gTxt := ImportName_iTxt;
@@ -527,6 +526,11 @@ codeunit 50100 "Excel Helper"
         end;
     end;
 
+    /// <summary>
+    /// SheetNameSetGet_gFnc.
+    /// </summary>
+    /// <param name="SheetName_iTxt">Text.</param>
+    /// <returns>Return variable SheetName_rTxt of type Text.</returns>
     procedure SheetNameSetGet_gFnc(SheetName_iTxt: Text) SheetName_rTxt: Text
     begin
         if SheetName_iTxt > '' then

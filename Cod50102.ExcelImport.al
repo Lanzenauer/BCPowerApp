@@ -1,4 +1,4 @@
-/* codeunit 50102 ExcelImport
+/* codeunit 50102 "ExcelImport"
 {
     var
         Rec_ExcelBuffer: Record "Excel Buffer";

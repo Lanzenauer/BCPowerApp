@@ -1,4 +1,4 @@
-page 50106 TransferItemsList
+page 50106 "TransferItemsList"
 {
 
     ApplicationArea = All;
