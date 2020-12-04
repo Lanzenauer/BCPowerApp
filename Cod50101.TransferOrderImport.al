@@ -1,12 +1,7 @@
 codeunit 50101 "TransferOrderImport"
 {
-    var
-        Excel_gCdu: Codeunit "Excel Helper";
-
     trigger OnRun()
     begin
-        Excel_gCdu.SetServerFileName('\\nas01\home\Tasks\PowerApp\TransferItems.xlsx');
-        Excel_gCdu.SetSheetName('TransferOrder');
         ImportTransferOrder();
     end;
 
@@ -27,21 +22,22 @@ codeunit 50101 "TransferOrderImport"
         ItemNo_lCod: Code[20];
         AdditionalSetup_lRec: Record "Additional Setup";
         newLinesCounter: integer;
-
+        Excel_lCdu: Codeunit "Excel Helper";
     begin
+        Excel_lCdu.SetServerFileName_gFnc('\\nas01\home\Tasks\PowerApp\TransferItems.xlsx');
+        Excel_lCdu.SetSheetName_gFnc('TransferOrder');
+        Excel_lCdu.SetSilent_gFnc(true);
         AdditionalSetup_lRec.FindFirst();
         newLinesCounter := 0;
         ImportName_lTxt := 'TransferOrder';
         FirstImportLine_lInt := AdditionalSetup_lRec.PowerAppExcelPointer + 1;
-        Excel_gCdu.Init_gFnc('Import of "' + ImportName_lTxt + '"', FirstImportLine_lInt, 0);
-        if Excel_gCdu.FindSet_gFnc then
+        Excel_lCdu.Init_gFnc('Import of "' + ImportName_lTxt + '"', FirstImportLine_lInt, 0);
+        if Excel_lCdu.FindSet_gFnc then
             repeat
                 QuantityInLocatation := 0;
-                ItemNo_lCod := Excel_gCdu.Field_gFnc('A');
-                vQuantity_lTxt := Excel_gCdu.Field_gFnc('B');
-                vQuantity_lDec := Excel_gCdu.FieldDec_gFnc(vQuantity_lTxt);
-                TransferFrom_lTxt := Excel_gCdu.Field_gFnc('C');
-
+                ItemNo_lCod := Excel_lCdu.Field_gFnc('A');
+                vQuantity_lDec := Excel_lCdu.FieldDec_gFnc('B');
+                TransferFrom_lTxt := Excel_lCdu.Field_gFnc('C');
                 Clear(ItemLedgerEntries_lRec);
                 ItemLedgerEntries_lRec.SetRange("Location Code", TransferFrom_lTxt);
                 ItemLedgerEntries_lRec.SetRange("Item No.", ItemNo_lCod);
@@ -50,11 +46,12 @@ codeunit 50101 "TransferOrderImport"
                         QuantityInLocatation += ItemLedgerEntries_lRec.Quantity;
                     until ItemLedgerEntries_lRec.Next() = 0;
                 if (QuantityInLocatation > 0) then
-                    if QuantityInLocatation >= vQuantity_lDec then begin
+                    if (QuantityInLocatation >= vQuantity_lDec) then begin
                         Clear(TransferHeader_lRec);
                         Clear(TransferLine_lRec);
                         TransferHeader_lRec.validate("Transfer-from Code", TransferFrom_lTxt);
-                        TransferHeader_lRec.validate("Transfer-to Code", Excel_gCdu.Field_gFnc('D'));
+                        TransferHeader_lRec.validate("Transfer-to Code", Excel_lCdu.Field_gFnc('D'));
+                        TransferHeader_lRec."In-Transit Code" := AdditionalSetup_lRec.TransitCodePowerapp;
                         TransferHeader_lRec.Insert(true);
 
                         TransferLine_lRec."Document No." := TransferHeader_lRec."No.";
@@ -64,8 +61,8 @@ codeunit 50101 "TransferOrderImport"
                         TransferLine_lRec.Insert(true);
                         newLinesCounter += 1;
                     end;
-            until Excel_gCdu.Next_gFnc = 0;
-        Excel_gCdu.Done_gFnc;
+            until Excel_lCdu.Next_gFnc = 0;
+        Excel_lCdu.Done_gFnc;
         AdditionalSetup_lRec.PowerAppExcelPointer += newLinesCounter;
         AdditionalSetup_lRec.Modify();
     end;

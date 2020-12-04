@@ -24,6 +24,10 @@ table 50101 "Additional Setup"
         {
 
         }
+        field(3; "TransitCodePowerapp"; Code[20])
+        {
+            TableRelation = Location.Code;
+        }
     }
     keys
     {

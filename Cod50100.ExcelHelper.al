@@ -68,6 +68,7 @@ codeunit 50100 "Excel Helper"
         Text001: Label 'You must enter a file name.';
         FileManagement: Codeunit "File Management";
         ServerFileName_gTxt: Text;
+        silent_gBln: Boolean;
 
     local procedure UT_Example_Import_lFnc()
     var
@@ -168,16 +169,21 @@ codeunit 50100 "Excel Helper"
     /// <param name="FirstImportLine_iInt">Integer.</param>
     /// <param name="LastImportLine_iInt">Integer.</param>
     /// <returns>Return value of type Boolean.</returns>
-    procedure SetServerFileName(ServerFileName: Text)
+    procedure SetServerFileName_gFnc(ServerFileName: Text)
     var
     begin
         ServerFileName_gTxt := ServerFileName;
     end;
 
-    procedure SetSheetName(Sheetname: Text)
+    procedure SetSheetName_gFnc(Sheetname: Text)
     var
     begin
         SheetName_gTxt := Sheetname;
+    end;
+
+    procedure SetSilent_gFnc(Silent: Boolean)
+    begin
+        silent_gBln := Silent;
     end;
 
 
@@ -322,7 +328,9 @@ codeunit 50100 "Excel Helper"
         ExcelBuf.DeleteAll;
         Commit;
         //MESSAGE(Done_gCtx,ImportName_gTxt, TotalRows_gInt,CurrRow_gInt-FirstImportLine_gInt);
-        Message(Done_gCtx, ImportName_gTxt, TotalRows_gInt - (FirstImportLine_gInt - 1), CurrRow_gInt - (FirstImportLine_gInt));
+        if (not silent_gBln) then begin
+            Message(Done_gCtx, ImportName_gTxt, TotalRows_gInt - (FirstImportLine_gInt - 1), CurrRow_gInt - (FirstImportLine_gInt));
+        end;
     end;
 
     procedure GetLastRowandColumn_lFnc(): Decimal
@@ -439,7 +447,9 @@ codeunit 50100 "Excel Helper"
         CurrRow_gInt := FirstImportLine_gInt;
         if TotalRows_gInt >= FirstImportLine_gInt then begin
             Progress_lDec := Round(CurrRow_gInt / TotalRows_gInt * 10000, 1);
-            Window_gDia.Open(Window_gCtx, Progress_lDec);
+            if (Not silent_gBln) then begin
+                Window_gDia.Open(Window_gCtx, Progress_lDec);
+            end;
             //ROUND(CurrRow_gInt / TotalRows_gInt * 10000,1)
             exit(true);
         end else begin
@@ -454,11 +464,15 @@ codeunit 50100 "Excel Helper"
         CurrRow_gInt += 1;
         if (TotalRows_gInt >= CurrRow_gInt) and (CurrRow_gInt <= LastImportLine_gInt) then begin
             Progress_lDec := Round(CurrRow_gInt / TotalRows_gInt * 10000, 1);
-            Window_gDia.Update(1, Progress_lDec);
+            if (not silent_gBln) then begin
+                Window_gDia.Update(1, Progress_lDec);
+            end;
             //EXIT(TRUE);
             exit(1);
         end else begin
-            Window_gDia.Close;
+            if (not silent_gBln) then begin
+                Window_gDia.Close;
+            end;
             //EXIT(FALSE);
             exit(0);
         end;

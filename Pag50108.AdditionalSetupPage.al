@@ -15,6 +15,7 @@ page 50108 "AdditionalSetupPage"
             {
                 field("Code"; "Code") { }
                 field("PowerAppExcelPointer"; PowerAppExcelPointer) { }
+                field(TransitCodePowerapp; TransitCodePowerapp) { }
             }
         }
     }
