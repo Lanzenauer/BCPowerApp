@@ -2,14 +2,14 @@ codeunit 50101 "TransferOrderImport"
 {
     trigger OnRun()
     begin
-        ImportTransferOrder();
+        //if 
+        ImportTransferOrder()
+        // then begin end;
     end;
 
+    //[TryFunction]
     local procedure ImportTransferOrder()
     var
-        V_lTxt: Text;
-        V_lDec: Decimal;
-        V_lDat: Date;
         ImportName_lTxt: Text;
         FirstImportLine_lInt: Integer;
         TransferHeader_lRec: Record "Transfer Header";
@@ -21,14 +21,14 @@ codeunit 50101 "TransferOrderImport"
         TransferFrom_lTxt: Text;
         ItemNo_lCod: Code[20];
         AdditionalSetup_lRec: Record "Additional Setup";
-        newLinesCounter: integer;
+        NewLinesCounter: integer;
         Excel_lCdu: Codeunit "Excel Helper";
     begin
         Excel_lCdu.SetServerFileName_gFnc('\\nas01\home\Tasks\PowerApp\TransferItems.xlsx');
         Excel_lCdu.SetSheetName_gFnc('TransferOrder');
         Excel_lCdu.SetSilent_gFnc(true);
         AdditionalSetup_lRec.FindFirst();
-        newLinesCounter := 0;
+        NewLinesCounter := 0;
         ImportName_lTxt := 'TransferOrder';
         FirstImportLine_lInt := AdditionalSetup_lRec.PowerAppExcelPointer + 1;
         Excel_lCdu.Init_gFnc('Import of "' + ImportName_lTxt + '"', FirstImportLine_lInt, 0);
@@ -59,11 +59,11 @@ codeunit 50101 "TransferOrderImport"
                         TransferLine_lRec.validate("Item No.", ItemNo_lCod);
                         TransferLine_lRec.validate(Quantity, vQuantity_lDec);
                         TransferLine_lRec.Insert(true);
-                        newLinesCounter += 1;
+                        NewLinesCounter += 1;
                     end;
             until Excel_lCdu.Next_gFnc = 0;
         Excel_lCdu.Done_gFnc;
-        AdditionalSetup_lRec.PowerAppExcelPointer += newLinesCounter;
+        AdditionalSetup_lRec.PowerAppExcelPointer += NewLinesCounter;
         AdditionalSetup_lRec.Modify();
     end;
 }
